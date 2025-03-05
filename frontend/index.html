@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>House Price Prediction</h1>
+        <form id="prediction-form">
+            <label for="bedrooms">Bedrooms:</label>
+            <input type="number" id="bedrooms" name="bedrooms" required><br>
+
+            <label for="bathrooms">Bathrooms:</label>
+            <input type="number" id="bathrooms" name="bathrooms" required><br>
+
+            <label for="sqft_living">Sqft Living:</label>
+            <input type="number" id="sqft_living" name="sqft_living" required><br>
+
+            <label for="floors">Floors:</label>
+            <input type="number" id="floors" name="floors" required><br>
+
+            <label for="yr_built">Year Built:</label>
+            <input type="number" id="yr_built" name="yr_built" required><br>
+
+            <button type="submit">Submit</button>
+        </form>
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading">
+            <p>Loading...</p>
+        </div>
+
+        <!-- Modal for displaying results -->
+        <div id="result-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <div id="result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    if (result.prediction !== undefined) {
+                        document.getElementById('result').innerText = 'Predicted Price: ' + result.prediction;
+                    } else {
+                        document.getElementById('result').innerText = 'Error: ' + result.error;
+                    }
+                } else {
+                    // Handle non-200 HTTP responses
+                    document.getElementById('result').innerText = 'Error: ' + result.error;
+                }
+
+                // Show the modal
+                document.getElementById('result-modal').style.display = 'block';
+                
+                // Clear the form
+                document.getElementById('prediction-form').reset();
+
+            } catch (error) {
+                document.getElementById('result').innerText = 'Error: ' + error.message;
+
+                // Show the modal
+                document.getElementById('result-modal').style.display = 'block';
+                
+                // Clear the form
+                document.getElementById('prediction-form').reset();
+            }
+        });
+
+        // Close the modal when the user clicks on the close button
+        document.querySelector('.close-button').addEventListener('click', function() {
+            document.getElementById('result-modal').style.display = 'none';
+        });
+
+        // Close the modal when the user clicks outside of the modal
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('result-modal')) {
+                document.getElementById('result-modal').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
