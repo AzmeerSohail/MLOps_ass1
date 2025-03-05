@@ -25,5 +25,12 @@ jobs:
       - name: Verify Numpy Installation
         run: python -c "import numpy; print(numpy.__version__)"
 
+      - name: Check if Model File Exists
+        run: |
+          if [ ! -f "linear_regression_model.pkl" ]; then
+            echo "Error: Model file not found!"
+            exit 1
+          fi
+
       - name: Run Unit Tests
         run: pytest tests/test.py
