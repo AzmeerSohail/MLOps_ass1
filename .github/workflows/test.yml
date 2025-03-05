@@ -19,7 +19,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --no-cache-dir --force-reinstall numpy
+          pip uninstall -y numpy
+          pip install --no-cache-dir numpy==1.24.4
           pip install -r requirements.txt
 
       - name: Verify Numpy Installation
