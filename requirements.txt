@@ -1,7 +1,7 @@
 pandas
 scikit-learn
 matplotlib
-numpy==1.23.5
+numpy
 seaborn
 category_encoders
 scipy
