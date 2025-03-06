@@ -32,7 +32,11 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    powershell 'echo $env:DOCKER_PASS | docker login -u $env:DOCKER_USER --password-stdin'
+                    powershell '''
+                    $Password = $env:DOCKER_PASS | ConvertTo-SecureString -AsPlainText -Force
+                    $Credential = New-Object System.Management.Automation.PSCredential ($env:DOCKER_USER, $Password)
+                    docker login -u $env:DOCKER_USER -p $env:DOCKER_PASS
+                    '''
                 }
             }
         }
