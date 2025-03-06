@@ -62,4 +62,47 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            script {
+                emailext (
+                    subject: "Deployment Successful: MLOps App",
+                    body: """
+                    Hello Admin,
+
+                    The deployment of the MLOps App has been successfully completed.
+
+                    Repository: https://github.com/AzmeerSohail/MLOps_ass1
+                    Docker Image: azmeer914/mlops-app:latest
+
+                    You can now access the application at <your-server-ip>:5000.
+
+                    Regards,
+                    Jenkins
+                    """,
+                    to: "azmeersohail03@gmail.com" // Replace with the actual admin email
+                )
+            }
+        }
+        failure {
+            script {
+                emailext (
+                    subject: "Deployment Failed: MLOps App",
+                    body: """
+                    Hello Admin,
+
+                    The deployment of the MLOps App has failed. Please check the Jenkins logs for more details.
+
+                    Repository: https://github.com/AzmeerSohail/MLOps_ass1
+                    Docker Image: azmeer914/mlops-app:latest
+
+                    Regards,
+                    Jenkins
+                    """,
+                    to: "azmeersohail03@gmail.com" // Replace with the actual admin email
+                )
+            }
+        }
+    }
 }
