@@ -1,30 +1,25 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import numpy as np
 import joblib
+import os
 
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+app = Flask(__name__, static_folder="../frontend")  # Set frontend folder
+CORS(app)  # Enable CORS for API calls
 
 # Load the trained model and scaler
-model = joblib.load("linear_regression_model.pkl")
-scaler = joblib.load("scaler.pkl")
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model = joblib.load(os.path.join(BASE_DIR, "linear_regression_model.pkl"))
+scaler = joblib.load(os.path.join(BASE_DIR, "scaler.pkl"))
 
 def validate_input(data):
-    """
-    Validate the input data.
-    Ensure correct data types and value ranges.
-    """
     try:
-        # Convert input to float and check ranges
         bedrooms = float(data.get("bedrooms", 0))
         bathrooms = float(data.get("bathrooms", 0))
         sqft_living = float(data.get("sqft_living", 0))
         floors = float(data.get("floors", 0))
         yr_built = float(data.get("yr_built", 0))
 
-        # Check if the values are within reasonable ranges
         if not (0 <= bedrooms <= 10):
             raise ValueError("Invalid value for bedrooms")
         if not (0 <= bathrooms <= 10):
@@ -41,35 +36,27 @@ def validate_input(data):
     except (ValueError, TypeError) as e:
         raise ValueError(f"Invalid input: {str(e)}")
 
-
 @app.route("/api/predict", methods=["POST"])
 def predict():
-    """
-    Predict house prices based on user input.
-    """
     try:
         data = request.json
-
-        # Validate input data
         features = validate_input(data)
-
-        # Prepare data for prediction
         input_data = np.array(features).reshape(1, -1)
         scaled_data = scaler.transform(input_data)
-
-        # Make prediction
         prediction = model.predict(scaled_data)[0]
-
         return jsonify({"prediction": prediction})
-
     except ValueError as ve:
         return jsonify({"error": str(ve)}), 400
-
     except Exception:
-        return jsonify(
-            {"error": "An error occurred. Please check your input."}
-        ), 500  # ✅ Fixed: Split into multiple lines
+        return jsonify({"error": "An error occurred. Please check your input."}), 500
 
+@app.route("/")
+def serve_frontend():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.route("/<path:path>")
+def serve_static_files(path):
+    return send_from_directory(app.static_folder, path)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

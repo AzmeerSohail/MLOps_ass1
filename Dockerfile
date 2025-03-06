@@ -1,18 +1,18 @@
-# Use an official Python runtime as base image
-FROM python:3.8-slim
+# Use Python 3.9 (or later)
+FROM python:3.9-slim
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy application files (including model file)
+# Copy the application files
 COPY src/ src/
-COPY requirements.txt . 
-
+COPY frontend/ frontend/  
+COPY requirements.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the port the app runs on
+# Expose port 5000 for Flask
 EXPOSE 5000
 
 # Command to run the app
