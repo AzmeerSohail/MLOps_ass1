@@ -53,14 +53,23 @@ pipeline {
             steps {
                 script {
                     powershell '''
-                    docker stop mlops-app -ErrorAction SilentlyContinue
-                    docker rm mlops-app -ErrorAction SilentlyContinue
+                    $existingContainer = docker ps -q --filter "name=mlops-app"
+                    if ($existingContainer) {
+                        Write-Host "Stopping and removing existing container..."
+                        docker stop mlops-app
+                        docker rm mlops-app
+                    }
+
+                    Write-Host "Pulling the latest Docker image..."
                     docker pull azmeer914/mlops-app:latest
+
+                    Write-Host "Running new container..."
                     docker run -d -p 5000:5000 --name mlops-app --restart always azmeer914/mlops-app:latest
                     '''
                 }
             }
         }
+
     }
 
     post {
