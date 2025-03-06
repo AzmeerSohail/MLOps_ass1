@@ -54,7 +54,9 @@ def predict():
         return jsonify({"error": str(ve)}), 400
 
     except Exception:
-        return jsonify({"error": "An error occurred. Please check your input."}), 500
+        return jsonify(
+            {"error": "An error occurred. Please check your input."}
+        ), 500
 
 
 @app.route("/")
