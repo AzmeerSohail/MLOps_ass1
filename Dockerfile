@@ -6,10 +6,8 @@ WORKDIR /app
 
 # Copy application files (including model file)
 COPY src/ src/
-COPY requirements.txt .  # Copy dependencies file
+COPY requirements.txt . 
 
-# Ensure the model file is copied
-COPY src/linear_regression_model.pkl src/
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
