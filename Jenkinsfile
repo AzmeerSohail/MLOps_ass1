@@ -21,7 +21,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def buildStatus = sh(script: 'docker build -t azmeer914/mlops-app:latest .', returnStatus: true)
+                    def buildStatus = powershell(returnStatus: true, script: 'docker build -t azmeer914/mlops-app:latest .')
                     if (buildStatus != 0) {
                         error("Docker build failed!")
                     }
@@ -29,19 +29,18 @@ pipeline {
             }
         }
 
-       stage('Login to Docker Hub') {
+        stage('Login to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    powershell 'echo $env:DOCKER_PASS | docker login -u $env:DOCKER_USER --password-stdin'
                 }
             }
         }
 
-
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    sh 'docker push azmeer914/mlops-app:latest'
+                    powershell 'docker push azmeer914/mlops-app:latest'
                 }
             }
         }
@@ -49,9 +48,9 @@ pipeline {
         stage('Deploy Container') {
             steps {
                 script {
-                    sh '''
-                    docker stop mlops-app || true
-                    docker rm mlops-app || true
+                    powershell '''
+                    docker stop mlops-app -ErrorAction SilentlyContinue
+                    docker rm mlops-app -ErrorAction SilentlyContinue
                     docker pull azmeer914/mlops-app:latest
                     docker run -d -p 5000:5000 --name mlops-app --restart always azmeer914/mlops-app:latest
                     '''
