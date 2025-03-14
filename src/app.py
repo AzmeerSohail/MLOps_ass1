@@ -16,7 +16,7 @@ scaler = joblib.load(os.path.join(BASE_DIR, "scaler.pkl"))
 
 def validate_input(data):
     try:
-        bedrooms = float(data.get("bedrooms", 0))  #no of bedrooms
+        bedrooms = float(data.get("bedrooms", 0))  
         bathrooms = float(data.get("bathrooms", 0))
         sqft_living = float(data.get("sqft_living", 0))
         floors = float(data.get("floors", 0))
@@ -71,5 +71,3 @@ def serve_static_files(path):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-
-
