@@ -71,3 +71,8 @@ def serve_static_files(path):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+# open cmd and run the command: java -jar "E:\Jenkins\Jenkins.war" --httpPort=8090
+# jenkins will open a login form user=admin 
+# open ngrok 
