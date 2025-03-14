@@ -74,5 +74,7 @@ if __name__ == "__main__":
 
 
 # open cmd and run the command: java -jar "E:\Jenkins\Jenkins.war" --httpPort=8090
+
 # jenkins will open a login form user=admin 
+
 # open ngrok 
