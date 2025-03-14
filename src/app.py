@@ -7,7 +7,6 @@ import os
 app = Flask(__name__, static_folder="../frontend")  # Set frontend folder
 CORS(app)  # Enable CORS for API calls
 
-
 # Load the trained model and scaler
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model = joblib.load(os.path.join(BASE_DIR, "linear_regression_model.pkl"))
@@ -16,7 +15,7 @@ scaler = joblib.load(os.path.join(BASE_DIR, "scaler.pkl"))
 
 def validate_input(data):
     try:
-        bedrooms = float(data.get("bedrooms", 0))  
+        bedrooms = float(data.get("bedrooms", 0))
         bathrooms = float(data.get("bathrooms", 0))
         sqft_living = float(data.get("sqft_living", 0))
         floors = float(data.get("floors", 0))
@@ -71,4 +70,4 @@ def serve_static_files(path):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-    
+
