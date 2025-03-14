@@ -16,7 +16,7 @@ scaler = joblib.load(os.path.join(BASE_DIR, "scaler.pkl"))
 
 def validate_input(data):
     try:
-        bedrooms = float(data.get("bedrooms", 0))
+        bedrooms = float(data.get("bedrooms", 0))  #no of bedrooms
         bathrooms = float(data.get("bathrooms", 0))
         sqft_living = float(data.get("sqft_living", 0))
         floors = float(data.get("floors", 0))
@@ -73,8 +73,3 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 
 
-# open cmd and run the command: java -jar "E:\Jenkins\Jenkins.war" --httpPort=8090
-
-# jenkins will open a login form user=admin 
-
-# open ngrok 
